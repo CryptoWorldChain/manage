@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package org.brewchain.manage.gens;
+
+message AdministratorAccountValue {
+    string pwd = 1;
+    string token = 2;
+    int64 lastLoginTime = 3;
+}

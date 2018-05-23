@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package org.brewchain.manage.gens;
+
+enum PMANModule {
+	MAN = 0; 
+};
+enum PMANCommand {
+    CIA = 0; // 判断是否需要注册
+    RAA = 1; // 设置管理员密码
+    LGI = 2; // 管理员登录
+
+    BQC = 3; // 批量读取配置信息
+    BSC = 4; // 批量设置配置信息
+}
+
+message ReqCheckIsFirstOpen {
+}
+
+message RespCheckIsFirstOpen {
+    string retCode = 1;
+    string retMsg = 2;
+}
+
+message ReqRegister {
+    string pwd = 1;
+}
+
+message RespRegister {
+    string retCode = 1;
+    string retMsg = 2;
+    string token = 3;
+}
+
+message ReqLogin {
+    string pwd = 1;
+}
+
+message RespLogin {
+    string retCode = 1;
+    string retMsg = 2;
+    string token = 3;
+}
+
+message ReqBatchQueryConfig {
+    repeated string keys = 1;
+}
+
+message RespBatchQueryConfig {
+    repeated string values = 1;
+    string retCode = 2;
+    string retMsg = 3;
+}
+
+message ReqBatchSetConfig {
+    repeated string keys = 1;
+    repeated string values = 2;
+}
+
+message RespBatchSetConfig {
+    string retCode = 1;
+    string retMsg = 2;
+}

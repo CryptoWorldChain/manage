@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package org.brewchain.manage.gens;
+
+enum PBLOCommand {
+    GGB = 0; // 获取创世块信息
+}
+
+message ReqGetGenesisBlock {
+
+}
+
+message RespGetGenesisBlock {
+    string hash = 1; 
+    string retCode = 2;
+    string retMsg = 3;
+}

@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package org.brewchain.manage.gens;
+
+enum PNODCommand {
+    GNI = 0; // 获取节点信息
+}
+
+message ReqGetNodeInfo {
+
+}
+
+message RespGetNodeInfo {
+    RaftNodeInfo raft = 1;
+    DposNodeInfo dpos = 2;
+    int64 cwstotal = 3;
+    string serverType = 4;  //服务器类型  
+    string serverTime = 5;  //服务器时间  
+    string osName = 6;  //操作系统名称  
+    string osVersion = 7;   //操作系统版本  
+    string osTimeZone = 8;  //操作系统时区 
+
+    string retCode = 9;
+    string retMsg = 10; 
+    string address = 11;
+
+    NodeNetwork network = 12;
+}
+
+message RaftNodeInfo {
+    string name = 1;
+    string bcuid = 2;
+    int32 nodeIdx = 4;
+    int64 startUpTime = 5;
+    string uri = 6;
+    string address = 7;
+}
+
+message DposNodeInfo {
+    string name = 1;
+    string bcuid = 2;
+    int32 nodeIdx = 4;
+    int64 startUpTime = 5;
+    string uri = 6;
+    string address = 7;
+}
+
+message NodeNetwork {
+    string name = 1;
+}

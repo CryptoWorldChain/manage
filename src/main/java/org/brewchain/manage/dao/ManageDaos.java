@@ -22,7 +22,7 @@ import onight.tfw.ojpa.api.annotations.StoreDAO;
 @Data
 @Slf4j
 @Instantiate(name = "man_Daos")
-public class DefDaos extends SessionModules<Message> {
+public class ManageDaos extends SessionModules<Message> {
 	@StoreDAO(target = "bc_bdb", daoClass = ManageDomain.class)
 	ODBSupport manageDao;
 

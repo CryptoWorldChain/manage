@@ -2,9 +2,9 @@ package org.brewchain.manage.impl;
 
 import java.util.LinkedList;
 
-import org.brewchain.account.util.OEntityBuilder;
+import org.brewchain.manage.util.OEntityBuilder;
 import org.brewchain.bcapi.gens.Oentity.OValue;
-import org.brewchain.manage.dao.DefDaos;
+import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqBatchQueryConfig;
@@ -26,8 +26,8 @@ import onight.tfw.otransio.api.beans.FramePacket;
 @Slf4j
 @Data
 public class BatchQueryConfigImpl extends SessionModules<ReqBatchQueryConfig> {
-	@ActorRequire(name = "Def_Daos", scope = "global")
-	DefDaos dao;
+	@ActorRequire(name = "man_Daos", scope = "global")
+	ManageDaos dao;
 	@ActorRequire(name = "bc_encoder", scope = "global")
 	EncAPI encApi;
 

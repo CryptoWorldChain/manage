@@ -2,16 +2,14 @@ package org.brewchain.manage.impl;
 
 import java.util.LinkedList;
 
-import org.brewchain.account.util.OEntityBuilder;
+import org.brewchain.manage.util.OEntityBuilder;
 import org.brewchain.bcapi.gens.Oentity.OKey;
 import org.brewchain.bcapi.gens.Oentity.OValue;
-import org.brewchain.manage.dao.DefDaos;
+import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqBatchSetConfig;
-import org.brewchain.manage.gens.Manageimpl.ReqRegister;
 import org.brewchain.manage.gens.Manageimpl.RespBatchSetConfig;
-import org.brewchain.manage.gens.Manageimpl.RespRegister;
 import org.fc.brewchain.bcapi.EncAPI;
 
 import lombok.Data;
@@ -27,8 +25,8 @@ import onight.tfw.otransio.api.beans.FramePacket;
 @Slf4j
 @Data
 public class BatchSetConfigImpl extends SessionModules<ReqBatchSetConfig> {
-	@ActorRequire(name = "Def_Daos", scope = "global")
-	DefDaos dao;
+	@ActorRequire(name = "man_Daos", scope = "global")
+	ManageDaos dao;
 	@ActorRequire(name = "bc_encoder", scope = "global")
 	EncAPI encApi;
 
@@ -50,7 +48,7 @@ public class BatchSetConfigImpl extends SessionModules<ReqBatchSetConfig> {
 			LinkedList<OKey> keys = new LinkedList<OKey>();
 			LinkedList<OValue> values = new LinkedList<OValue>();
 			for (int i = 0; i <= pb.getKeysCount(); i++) {
-				keys.add(OEntityBuilder.byteKey2OKey(encApi.hexDec(pb.getKeys(i))));
+				keys.add(OEntityBuilder.byteKey2OKey(pb.getKeys(i).getBytes()));
 				values.add(OEntityBuilder.byteValue2OValue(encApi.hexDec(pb.getValues(i))));
 			}
 			dao.getManageDao().batchPuts((OKey[]) keys.toArray(), (OValue[]) values.toArray());

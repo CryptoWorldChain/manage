@@ -2,14 +2,11 @@ package org.brewchain.manage.impl;
 
 import org.brewchain.account.core.BlockChainHelper;
 import org.brewchain.account.gens.Block.BlockEntity;
-import org.brewchain.manage.dao.DefDaos;
+import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Block.PBLOCommand;
 import org.brewchain.manage.gens.Block.ReqGetGenesisBlock;
 import org.brewchain.manage.gens.Block.RespGetGenesisBlock;
-import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
-import org.brewchain.manage.gens.Manageimpl.ReqLogin;
-import org.brewchain.manage.gens.Manageimpl.RespLogin;
 import org.fc.brewchain.bcapi.EncAPI;
 
 import lombok.Data;
@@ -25,8 +22,8 @@ import onight.tfw.otransio.api.beans.FramePacket;
 @Slf4j
 @Data
 public class GetGenesisBlockImpl extends SessionModules<ReqGetGenesisBlock> {
-	@ActorRequire(name = "Def_Daos", scope = "global")
-	DefDaos dao;
+	@ActorRequire(name = "man_Daos", scope = "global")
+	ManageDaos dao;
 	@ActorRequire(name = "bc_encoder", scope = "global")
 	EncAPI encApi;
 	@ActorRequire(name = "BlockChain_Helper", scope = "global")

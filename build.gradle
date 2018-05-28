@@ -1,9 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
-
-sourceCompatibility = 1.7
-
 buildscript {
+	repositories {
+	    maven {
+	      url "https://plugins.gradle.org/m2/"
+	    }
+	  }
 	dependencies { 
 		classpath "onight.osgi:zpp-gradle:3.0.0"
 		classpath "org.brewchain:org.brewchain.bcapi:3.3.3"
@@ -14,9 +14,6 @@ buildscript {
 
 version = '1.0.0'
 
-//repositories{
-//	maven{ url "http://dl.bintray.com/ethereum/maven/"}
-//}
 project.group='org.brewchain'
 
 apply plugin: 'zippo'
@@ -46,6 +43,7 @@ dependencies {
 	compile 'com.fasterxml.jackson:jackson-parent:2.5'
     compile "com.fasterxml.jackson.core:jackson-databind:2.5.1"
     compile "com.cedarsoftware:java-util:1.8.0"
+    compile group: 'de.rtner', name: 'PBKDF2', version: '1.1.2'
     
     compile 'com.google.guava:guava:19.0'
     //compile ""

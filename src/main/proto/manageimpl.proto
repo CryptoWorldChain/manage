@@ -12,6 +12,31 @@ enum PMANCommand {
 
     BQC = 3; // 批量读取配置信息
     BSC = 4; // 批量设置配置信息
+    SNW = 5; // 设置chain net
+    GNW = 8; // 获取chain net
+    CNA = 6; // 创建node账户
+    GNA = 7; // 获取node账户
+    SNA = 9; // 设置node账户
+    ENA = 10;// 导出node账户
+}
+
+message ReqExportNodeAccount {
+    string pwd = 1;
+}
+
+message RespExportNodeAccount {
+    string retCode = 1;
+    string retMsg = 2;
+    string keyStoreJsonStr = 3;
+}
+
+message ReqCreateNewAccount {
+    string pwd = 1;
+}
+
+message RespCreateNewAccount {
+    string retCode = 1;
+    string retMsg = 2;
 }
 
 message ReqCheckIsFirstOpen {
@@ -60,4 +85,77 @@ message ReqBatchSetConfig {
 message RespBatchSetConfig {
     string retCode = 1;
     string retMsg = 2;
+}
+
+message ReqSetNetwork {
+    string network = 1;
+}
+
+message RespSetNetwork {
+    string retCode = 1;
+    string retMsg = 2;
+}
+
+message ReqGetNetwork {
+    
+}
+
+message RespGetNetwork {
+    string retCode = 1;
+    string retMsg = 2;
+    string network = 3;
+}
+
+message ReqSetNodeAccount {
+    string keyStoreJsonStr = 1;
+    string pwd = 2;
+}
+
+message RespSetNodeAccount {
+    string retCode = 1;
+    string retMsg = 2;
+}
+
+message ReqGetNodeAccount {
+    string address = 1;
+}
+
+message RespGetNodeAccount {
+    string retCode = 1;
+    string retMsg = 2;
+    AccountValueImpl accountValue = 3;
+}
+
+message AccountValueImpl {
+    int32 nonce = 1;
+    int64 balance = 2;
+    string pubKey = 3;
+    int64 max = 4;
+    int64 acceptMax = 5;
+    int32 acceptLimit = 6;
+    repeated string address = 7;
+    repeated AccountTokenValueImpl tokens = 8;
+    repeated AccountCryptoValueImpl cryptos = 9;
+}
+
+message AccountTokenValueImpl {
+    string token = 1;
+    int64 balance = 2;
+}
+
+message AccountCryptoValueImpl {
+    string symbol = 1; // 用于分类ERC721 Token的标记
+    repeated AccountCryptoTokenImpl tokens = 2;
+}
+
+message AccountCryptoTokenImpl {
+    string hash = 1; // Token的hash，hash(index,total,code,name,timestamp)
+    int64 timestamp = 2; // Token创建时间
+    int32 index = 3; // 该Token发行时的索引
+    int32 total = 4; // 该Token的发行总数量
+    string code = 5; // Token的编号
+    string name = 6; // Token的名称
+    string owner = 7; // 所有人的账户地址
+    int32 nonce = 8; // 交易次数
+    int64 ownertime = 9; // 所有人获取时间
 }

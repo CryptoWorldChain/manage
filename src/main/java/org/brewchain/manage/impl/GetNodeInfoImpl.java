@@ -1,12 +1,14 @@
 package org.brewchain.manage.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Date;
 import java.util.Properties;
 import java.util.TimeZone;
 import org.brewchain.account.core.AccountHelper;
 import org.brewchain.account.util.OEntityBuilder;
 import org.brewchain.bcapi.gens.Oentity.OValue;
-import org.brewchain.manage.dao.DefDaos;
+import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Node.DposNodeInfo;
 import org.brewchain.manage.gens.Node.NodeNetwork;
@@ -14,6 +16,7 @@ import org.brewchain.manage.gens.Node.PNODCommand;
 import org.brewchain.manage.gens.Node.RaftNodeInfo;
 import org.brewchain.manage.gens.Node.ReqGetNodeInfo;
 import org.brewchain.manage.gens.Node.RespGetNodeInfo;
+import org.brewchain.manage.util.KeyStoreHelper;
 import org.brewchain.manage.util.ManageKeys;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.p22p.node.Network;
@@ -33,13 +36,15 @@ import onight.tfw.otransio.api.beans.FramePacket;
 @Slf4j
 @Data
 public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
-	@ActorRequire(name = "Def_Daos", scope = "global")
-	DefDaos dao;
+	@ActorRequire(name = "man_Daos", scope = "global")
+	ManageDaos dao;
 	@ActorRequire(name = "bc_encoder", scope = "global")
 	EncAPI encApi;
 	@ActorRequire(name = "Account_Helper", scope = "global")
 	AccountHelper oAccountHelper;
-
+	@ActorRequire(name = "KeyStore_Helper", scope = "global")
+	KeyStoreHelper keyStoreHelper;
+	
 	@Override
 	public String[] getCmds() {
 		return new String[] { PNODCommand.GNI.name() };
@@ -83,6 +88,15 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 
 		// 尝试读取地址配置
 		try {
+			
+			FileReader fr = new FileReader(".keystore");
+			BufferedReader br = new BufferedReader(fr);
+			String keyStoreStr = br.readLine().trim().replace("\r","").replace("\t","");
+			br.close();
+			fr.close();
+			
+			// encApi.
+			
 			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ADDRESS.getBytes()))
 					.get();
 
@@ -92,12 +106,15 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 				oRespGetNodeInfo.setAddress(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
 				oRespGetNodeInfo.setCwstotal(oAccountHelper.getTokenBalance(oOValue.getExtdata().toByteArray(), "CWS"));
 			}
+			
+			
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
 		
+		// net
 		try {
-			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_NETWORK.getBytes()))
+			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_NET.getBytes()))
 					.get();
 
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {

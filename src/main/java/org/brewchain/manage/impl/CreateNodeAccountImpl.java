@@ -5,19 +5,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.brewchain.account.util.OEntityBuilder;
+import org.brewchain.manage.util.OEntityBuilder;
+import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
+import org.brewchain.bcapi.gens.Oentity.OKey;
+import org.brewchain.bcapi.gens.Oentity.OValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
-import org.brewchain.manage.gens.Manageimpl.ReqCheckIsFirstOpen;
 import org.brewchain.manage.gens.Manageimpl.ReqCreateNewAccount;
-import org.brewchain.manage.gens.Manageimpl.ReqSetNodeAccount;
 import org.brewchain.manage.gens.Manageimpl.RespCreateNewAccount;
-import org.brewchain.manage.gens.Manageimpl.RespSetNodeAccount;
-import org.brewchain.manage.util.KeyStoreHelper;
 import org.brewchain.manage.util.ManageKeys;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyPairs;
+import org.fc.brewchain.bcapi.KeyStoreFile;
+import org.fc.brewchain.bcapi.KeyStoreHelper;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +55,14 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 		RespCreateNewAccount.Builder oRespCreateNewAccount = RespCreateNewAccount.newBuilder();
 
 		KeyPairs oKeyPairs = encApi.genKeys();
-		String keyStoreFileStr = keyStoreHelper.generate(oKeyPairs, pb.getPwd());
 		// 写入文件夹
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
+			KeyStoreFile oKeyStoreFile = keyStoreHelper.generate(oKeyPairs, pb.getPwd());
+			String keyStoreFileStr = keyStoreHelper.parseToJsonStr(oKeyStoreFile);
+			KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreFileStr, pb.getPwd());
+
 			File keyStoreFile = new File(".keystore");
 			if (keyStoreFile.exists()) {
 				keyStoreFile.delete();
@@ -74,8 +78,9 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 				fw.close();
 
 				oRespCreateNewAccount.setRetCode("1");
-				dao.getManageDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ADDRESS.getBytes()),
-						OEntityBuilder.byteValue2OValue(encApi.hexDec(oKeyPairs.getAddress())));
+
+				dao.getAccountDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
+						OEntityBuilder.byteValue2OValue(oKeyStoreValue.toByteArray()));
 			}
 		} catch (Exception e) {
 			log.error("error on read network::" + e.getMessage());

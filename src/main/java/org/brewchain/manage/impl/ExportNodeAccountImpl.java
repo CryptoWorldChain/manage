@@ -1,23 +1,16 @@
 package org.brewchain.manage.impl;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 
-import org.brewchain.account.util.OEntityBuilder;
+import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqExportNodeAccount;
-import org.brewchain.manage.gens.Manageimpl.ReqSetNodeAccount;
 import org.brewchain.manage.gens.Manageimpl.RespExportNodeAccount;
-import org.brewchain.manage.gens.Manageimpl.RespSetNodeAccount;
-import org.brewchain.manage.util.KeyStoreHelper;
-import org.brewchain.manage.util.ManageKeys;
 import org.fc.brewchain.bcapi.EncAPI;
+import org.fc.brewchain.bcapi.KeyStoreHelper;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -57,12 +50,26 @@ public class ExportNodeAccountImpl extends SessionModules<ReqExportNodeAccount> 
 			// read file
 			FileReader fr = new FileReader(".keystore");
 			BufferedReader br = new BufferedReader(fr);
-			String keyStoreJsonStr = br.readLine().trim().replace("\r", "").replace("\t", "");
+			String keyStoreJsonStr = "";
+			
+			String line = br.readLine();    
+			while(line != null){
+				keyStoreJsonStr += line.trim().replace("\r", "").replace("\t", "");
+			   line = br.readLine();
+			}
 			br.close();
 			fr.close();
-			oRespExportNodeAccount.setRetCode("1");
-			oRespExportNodeAccount
-					.setKeyStoreJsonStr(keyStoreHelper.parseToJsonStr(keyStoreHelper.parse(keyStoreJsonStr)));
+			
+			KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreJsonStr, pb.getPwd());
+			if (oKeyStoreValue == null) {
+				oRespExportNodeAccount.setRetCode("-1");
+				oRespExportNodeAccount.setRetMsg("pwd or jsonstr error");
+			}else {
+				oRespExportNodeAccount.setRetCode("1");
+				oRespExportNodeAccount
+				.setKeyStoreJsonStr(keyStoreHelper.parseToJsonStr(keyStoreHelper.parse(keyStoreJsonStr)));
+			}
+			
 		} catch (Exception e) {
 			if (e.getMessage() != null) {
 				oRespExportNodeAccount.setRetMsg(e.getMessage());

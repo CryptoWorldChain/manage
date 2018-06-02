@@ -1,16 +1,13 @@
 package org.brewchain.manage.dao;
 
 import org.apache.felix.ipojo.annotations.Instantiate;
-import org.brewchain.account.gens.Actimpl.PACTModule;
 import org.brewchain.bcapi.backend.ODBSupport;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
-import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.p22p.core.PZPCtrl;
 
 import com.google.protobuf.Message;
 
 import lombok.Data;
-import lombok.experimental.var;
 import lombok.extern.slf4j.Slf4j;
 import onight.oapi.scala.commons.SessionModules;
 import onight.osgi.annotation.NActorProvider;
@@ -25,7 +22,8 @@ import onight.tfw.ojpa.api.annotations.StoreDAO;
 public class ManageDaos extends SessionModules<Message> {
 	@StoreDAO(target = "bc_bdb", daoClass = ManageDomain.class)
 	ODBSupport manageDao;
-
+	@StoreDAO(target = "bc_bdb", daoClass = AccoutDomain.class)
+	ODBSupport accountDao;
 	@ActorRequire(scope = "global", name = "pzpctrl")
 	PZPCtrl pzp;
 
@@ -39,7 +37,13 @@ public class ManageDaos extends SessionModules<Message> {
 	@Override
 	public void onDaoServiceReady(DomainDaoSupport arg0) {
 	}
+	public void setAccountDao(DomainDaoSupport accountDao) {
+		this.accountDao = (ODBSupport) accountDao;
+	}
 
+	public ODBSupport getAccountDao() {
+		return accountDao;
+	}
 	public void setManageDao(DomainDaoSupport manageDao) {
 		this.manageDao = (ODBSupport) manageDao;
 	}

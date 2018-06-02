@@ -2,7 +2,7 @@ package org.brewchain.manage.impl;
 
 import java.util.Date;
 
-import org.brewchain.account.util.OEntityBuilder;
+import org.brewchain.manage.util.OEntityBuilder;
 import org.brewchain.bcapi.gens.Oentity.OValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manage.AdministratorAccountValue;
@@ -10,9 +10,9 @@ import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqRegister;
 import org.brewchain.manage.gens.Manageimpl.RespRegister;
-import org.brewchain.manage.util.IDGenerator;
 import org.brewchain.manage.util.ManageKeys;
 import org.fc.brewchain.bcapi.EncAPI;
+import org.fc.brewchain.bcapi.IDGenerator;
 
 import com.google.protobuf.ByteString;
 

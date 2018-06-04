@@ -19,6 +19,22 @@ enum PMANCommand {
     SNA = 9; // 设置node账户
     ENA = 10;// 导出node账户
     SNP = 11;// 设置node账户
+    
+    SLC = 12;// 发送锁定cws交易
+    SUC = 13;// 发送解锁cws交易
+}
+
+message ReqSendLockCWS {
+	string pwd = 1;
+	int32 amount = 2;
+}
+
+message ReqSendUnLockCWS {}
+
+message RespDoTxResult {
+	string retCode = 1;
+    string retMsg = 2;
+    string txHash = 3;
 }
 
 message ReqExportNodeAccount {

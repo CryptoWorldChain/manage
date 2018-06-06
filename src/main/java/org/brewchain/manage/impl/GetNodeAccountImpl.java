@@ -60,8 +60,7 @@ public class GetNodeAccountImpl extends SessionModules<ReqGetNodeAccount> {
 				oRespGetNodeAccount.setRetCode("-1");
 				oRespGetNodeAccount.setRetMsg("not found");
 			} else {
-				KeyStoreValue oKeyStoreValue = KeyStoreValue.parseFrom(oOValue.getExtdata().toByteArray());
-				oRespGetNodeAccount.setAddress(oKeyStoreValue.getAddress());
+				oRespGetNodeAccount.setAddress(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
 				oRespGetNodeAccount.setRetCode("1");
 			}
 		} catch (Exception e) {

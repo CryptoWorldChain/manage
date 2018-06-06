@@ -99,8 +99,7 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 
 			} else {
-				KeyStoreValue oKeyStoreValue = KeyStoreValue.parseFrom(oOValue.getExtdata().toByteArray());
-				oRespGetNodeInfo.setAddress(oKeyStoreValue.getAddress());
+				oRespGetNodeInfo.setAddress(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());

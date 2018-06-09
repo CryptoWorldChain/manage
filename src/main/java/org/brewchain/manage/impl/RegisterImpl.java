@@ -48,8 +48,7 @@ public class RegisterImpl extends SessionModules<ReqRegister> {
 	public void onPBPacket(final FramePacket pack, final ReqRegister pb, final CompleteHandler handler) {
 		RespRegister.Builder oRespRegister = RespRegister.newBuilder();
 		try {
-			OValue oOValue = dao.getManageDao()
-					.get(OEntityBuilder.byteKey2OKey(ManageKeys.ADMINISTRATOR_KEY.getBytes())).get();
+			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.ADMINISTRATOR_KEY.getBytes())).get();
 			if (oOValue != null && oOValue.getExtdata() != null && !oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespRegister.setRetCode("-1");
 				oRespRegister.setRetMsg("账户已存在");

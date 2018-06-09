@@ -43,16 +43,14 @@ public class CheckIsFirstOpenImpl extends SessionModules<ReqCheckIsFirstOpen> {
 
 	@Override
 	public void onPBPacket(final FramePacket pack, final ReqCheckIsFirstOpen pb, final CompleteHandler handler) {
-		org.brewchain.manage.gens.Manageimpl.RespCheckIsFirstOpen.Builder oRespCheckIsFirstOpen = RespCheckIsFirstOpen
-				.newBuilder();
+		org.brewchain.manage.gens.Manageimpl.RespCheckIsFirstOpen.Builder oRespCheckIsFirstOpen = RespCheckIsFirstOpen.newBuilder();
 
 		try {
-			OValue oOValue = dao.getManageDao()
-					.get(OEntityBuilder.byteKey2OKey(ManageKeys.ADMINISTRATOR_KEY.getBytes())).get();
+			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.ADMINISTRATOR_KEY.getBytes())).get();
 
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
-				oRespCheckIsFirstOpen.setRetCode("1");
-			} else {
+				oRespCheckIsFirstOpen.setRetCode("1");//数据库未查询到该账户信息，需要设置账户密码
+			} else {//数据库已经查询到该账户信息，不需要重新登录
 				oRespCheckIsFirstOpen.setRetCode("-1");
 			}
 		} catch (Exception e) {

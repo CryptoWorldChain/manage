@@ -47,6 +47,7 @@ public class ExportNodeAccountImpl extends SessionModules<ReqExportNodeAccount> 
 		RespExportNodeAccount.Builder oRespExportNodeAccount = RespExportNodeAccount.newBuilder();
 
 		try {
+			
 			// read file
 			FileReader fr = new FileReader(".keystore");
 			BufferedReader br = new BufferedReader(fr);

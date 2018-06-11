@@ -1,12 +1,14 @@
 package org.brewchain.manage.impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
+import org.brewchain.account.core.AccountHelper;
+import org.brewchain.account.core.BlockChainConfig;
+import org.brewchain.account.gens.Act.Account;
+import org.brewchain.account.gens.Act.AccountTokenValue;
 import org.brewchain.bcapi.gens.Oentity.OValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
@@ -43,6 +45,12 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 	EncAPI encApi;
 	@ActorRequire(name = "KeyStore_Helper", scope = "global")
 	KeyStoreHelper keyStoreHelper;
+	
+	@ActorRequire(name = "BlockChain_Config", scope = "global")
+	BlockChainConfig blockChainConfig;
+	
+	@ActorRequire(name = "Account_Helper", scope = "global")
+	AccountHelper oAccountHelper;
 
 	@Override
 	public String[] getCmds() {
@@ -87,13 +95,6 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 
 		// 尝试读取地址配置
 		try {
-
-			FileReader fr = new FileReader(".keystore");
-			BufferedReader br = new BufferedReader(fr);
-			String keyStoreStr = br.readLine().trim().replace("\r", "").replace("\t", "");
-			br.close();
-			fr.close();
-
 			OValue oOValue = dao.getAccountDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
@@ -101,6 +102,15 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 			} else {
 				oRespGetNodeInfo.setAddress(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
 			}
+			
+			Account account = oAccountHelper.GetAccount(oOValue.getExtdata().toByteArray());
+			List<AccountTokenValue> tokenValues = account.getValue().getTokensList();
+			for(AccountTokenValue token : tokenValues){
+				if (token.getToken().equals("cws")) {
+					oRespGetNodeInfo.setCwstotal(token.getBalance());
+				}
+			}
+			
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

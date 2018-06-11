@@ -34,6 +34,7 @@ dependencies {
     compile ("org.brewchain:org.brewchain.bcapi:3.3.3")
     compile ("org.brewchain:org.brewchain.p22p:3.0.0")
     compile ("org.brewchain:org.brewchain.account:1.0.5")
+    compile ("org.brewchain:org.brewchain.evmapi:1.0.0")
 }
 
 jar {

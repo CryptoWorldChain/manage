@@ -7,9 +7,9 @@ import java.util.TimeZone;
 
 import org.brewchain.account.core.AccountHelper;
 import org.brewchain.account.core.BlockChainConfig;
-import org.brewchain.account.gens.Act.Account;
-import org.brewchain.account.gens.Act.AccountTokenValue;
 import org.brewchain.bcapi.gens.Oentity.OValue;
+import org.brewchain.evmapi.gens.Act.Account;
+import org.brewchain.evmapi.gens.Act.AccountTokenValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Node.DposNodeInfo;

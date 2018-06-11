@@ -8,17 +8,17 @@ import java.util.Date;
 import org.brewchain.account.core.AccountHelper;
 import org.brewchain.account.core.BlockChainConfig;
 import org.brewchain.account.core.TransactionHelper;
-import org.brewchain.account.gens.Tx.MultiTransaction;
-import org.brewchain.account.gens.Tx.MultiTransactionBody;
-import org.brewchain.account.gens.Tx.MultiTransactionInput;
-import org.brewchain.account.gens.Tx.MultiTransactionOutput;
-import org.brewchain.account.gens.Tx.MultiTransactionSignature;
+import org.brewchain.account.enums.TransTypeEnum;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
+import org.brewchain.evmapi.gens.Tx.MultiTransaction;
+import org.brewchain.evmapi.gens.Tx.MultiTransactionBody;
+import org.brewchain.evmapi.gens.Tx.MultiTransactionInput;
+import org.brewchain.evmapi.gens.Tx.MultiTransactionOutput;
+import org.brewchain.evmapi.gens.Tx.MultiTransactionSignature;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqSendLockCWS;
-import org.brewchain.manage.gens.Manageimpl.ReqSetNetwork;
 import org.brewchain.manage.gens.Manageimpl.RespDoTxResult;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyStoreHelper;
@@ -33,7 +33,6 @@ import onight.tfw.async.CompleteHandler;
 import onight.tfw.ntrans.api.annotation.ActorRequire;
 import onight.tfw.otransio.api.PacketHelper;
 import onight.tfw.otransio.api.beans.FramePacket;
-import onight.tfw.outils.bean.JsonPBFormat;
 
 @NActorProvider
 @Slf4j
@@ -102,7 +101,7 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 				oMultiTransactionOutput.setAmount(pb.getAmount());
 				oMultiTransactionBody.addOutputs(oMultiTransactionOutput);
-				oMultiTransactionBody.setData(ByteString.copyFromUtf8("06"));
+				oMultiTransactionBody.setType(TransTypeEnum.TYPE_LockTokenTransaction.value());
 				oMultiTransaction.setTxHash(ByteString.EMPTY);
 				oMultiTransactionBody.clearSignatures();
 				oMultiTransactionBody.setTimestamp((new Date()).getTime());

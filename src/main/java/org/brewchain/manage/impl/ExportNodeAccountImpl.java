@@ -1,8 +1,10 @@
 package org.brewchain.manage.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 
+import org.brewchain.account.core.BlockChainConfig;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
@@ -31,6 +33,9 @@ public class ExportNodeAccountImpl extends SessionModules<ReqExportNodeAccount> 
 	EncAPI encApi;
 	@ActorRequire(name = "KeyStore_Helper", scope = "global")
 	KeyStoreHelper keyStoreHelper;
+	
+	@ActorRequire(name = "BlockChain_Config", scope = "global")
+	BlockChainConfig blockChainConfig;
 
 	@Override
 	public String[] getCmds() {
@@ -49,7 +54,7 @@ public class ExportNodeAccountImpl extends SessionModules<ReqExportNodeAccount> 
 		try {
 			
 			// read file
-			FileReader fr = new FileReader(".keystore");
+			FileReader fr = new FileReader("keystore" + File.separator + blockChainConfig.getNet() +  File.separator + "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
 			BufferedReader br = new BufferedReader(fr);
 			String keyStoreJsonStr = "";
 			
@@ -67,8 +72,7 @@ public class ExportNodeAccountImpl extends SessionModules<ReqExportNodeAccount> 
 				oRespExportNodeAccount.setRetMsg("pwd or jsonstr error");
 			}else {
 				oRespExportNodeAccount.setRetCode("1");
-				oRespExportNodeAccount
-				.setKeyStoreJsonStr(keyStoreHelper.parseToJsonStr(keyStoreHelper.parse(keyStoreJsonStr)));
+				oRespExportNodeAccount.setKeyStoreJsonStr(keyStoreHelper.parseToJsonStr(keyStoreHelper.parse(keyStoreJsonStr)));
 			}
 			
 		} catch (Exception e) {

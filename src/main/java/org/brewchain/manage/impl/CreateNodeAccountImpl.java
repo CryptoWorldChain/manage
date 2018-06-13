@@ -1,11 +1,15 @@
 package org.brewchain.manage.impl;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import org.brewchain.manage.util.OEntityBuilder;
+import org.brewchain.account.core.BlockChainConfig;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.bcapi.gens.Oentity.OKey;
 import org.brewchain.bcapi.gens.Oentity.OValue;
@@ -39,6 +43,9 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 	EncAPI encApi;
 	@ActorRequire(name = "KeyStore_Helper", scope = "global")
 	KeyStoreHelper keyStoreHelper;
+	
+	@ActorRequire(name = "BlockChain_Config", scope = "global")
+	BlockChainConfig blockChainConfig;
 
 	@Override
 	public String[] getCmds() {
@@ -63,8 +70,9 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 			String keyStoreFileStr = keyStoreHelper.parseToJsonStr(oKeyStoreFile);
 			KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreFileStr, pb.getPwd());
 
-			File keyStoreFile = new File(".keystore");
+			File keyStoreFile = new File("keystore" + File.separator + blockChainConfig.getNet() +  File.separator + "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
 			if (keyStoreFile.exists()) {
+				log.warn("old keystore file exist, it will be removed and create a new one...");
 				keyStoreFile.delete();
 			}
 			if (!keyStoreFile.createNewFile()) {

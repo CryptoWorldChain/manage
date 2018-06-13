@@ -106,7 +106,7 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 			Account account = oAccountHelper.GetAccount(oOValue.getExtdata().toByteArray());
 			List<AccountTokenValue> tokenValues = account.getValue().getTokensList();
 			for(AccountTokenValue token : tokenValues){
-				if (token.getToken().equals("cws")) {
+				if (token.getToken().equals("CWS")) {
 					oRespGetNodeInfo.setCwstotal(token.getBalance());
 				}
 			}

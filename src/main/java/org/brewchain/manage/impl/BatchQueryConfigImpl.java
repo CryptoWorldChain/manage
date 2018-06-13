@@ -51,7 +51,7 @@ public class BatchQueryConfigImpl extends SessionModules<ReqBatchQueryConfig> {
 				if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 					retValues.add("");
 				} else {
-					retValues.add(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
+					oRespBatchSetConfig.addValues(oOValue.getExtdata().toStringUtf8());
 				}
 			}
 			oRespBatchSetConfig.setRetCode("1");

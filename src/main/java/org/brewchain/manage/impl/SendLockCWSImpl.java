@@ -95,7 +95,7 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionInput.setFee(0);
 				oMultiTransactionInput.setFeeLimit(0);
 				oMultiTransactionInput.setNonce(nonce);
-				oMultiTransactionInput.setToken("cws");
+				oMultiTransactionInput.setToken("CWS");
 				oMultiTransactionBody.addInputs(oMultiTransactionInput);
 				MultiTransactionOutput.Builder oMultiTransactionOutput = MultiTransactionOutput.newBuilder();
 				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));

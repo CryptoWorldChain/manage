@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.brewchain.manage.util.OEntityBuilder;
+import org.brewchain.account.core.BlockChainConfig;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.bcapi.gens.Oentity.OKey;
 import org.brewchain.bcapi.gens.Oentity.OValue;
@@ -39,6 +40,8 @@ public class SetNodeAccountByPrivImpl extends SessionModules<ReqSetNodeAccountBy
 	EncAPI encApi;
 	@ActorRequire(name = "KeyStore_Helper", scope = "global")
 	KeyStoreHelper keyStoreHelper;
+	@ActorRequire(name = "BlockChain_Config", scope = "global")
+	BlockChainConfig blockChainConfig;
 
 	@Override
 	public String[] getCmds() {
@@ -64,7 +67,7 @@ public class SetNodeAccountByPrivImpl extends SessionModules<ReqSetNodeAccountBy
 			String keyStoreFileStr = keyStoreHelper.parseToJsonStr(oKeyStoreFile);
 			KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreFileStr, pb.getPwd());
 
-			File keyStoreFile = new File(".keystore");
+			File keyStoreFile = new File("keystore" + File.separator + blockChainConfig.getNet() +  File.separator + "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
 			if (keyStoreFile.exists()) {
 				keyStoreFile.delete();
 			}

@@ -12,6 +12,8 @@ import org.brewchain.manage.gens.Manageimpl.ReqBatchSetConfig;
 import org.brewchain.manage.gens.Manageimpl.RespBatchSetConfig;
 import org.fc.brewchain.bcapi.EncAPI;
 
+import com.google.protobuf.ByteString;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import onight.oapi.scala.commons.SessionModules;
@@ -47,11 +49,11 @@ public class BatchSetConfigImpl extends SessionModules<ReqBatchSetConfig> {
 		try {
 			LinkedList<OKey> keys = new LinkedList<OKey>();
 			LinkedList<OValue> values = new LinkedList<OValue>();
-			for (int i = 0; i <= pb.getKeysCount(); i++) {
+			for (int i = 0; i < pb.getKeysCount(); i++) {
 				keys.add(OEntityBuilder.byteKey2OKey(pb.getKeys(i).getBytes()));
-				values.add(OEntityBuilder.byteValue2OValue(encApi.hexDec(pb.getValues(i))));
+				values.add(OEntityBuilder.byteValue2OValue(ByteString.copyFromUtf8(pb.getValues(i)).toByteArray()));
 			}
-			dao.getManageDao().batchPuts((OKey[]) keys.toArray(), (OValue[]) values.toArray());
+			dao.getManageDao().batchPuts(keys.toArray(new OKey[0]), values.toArray(new OValue[0]));
 			oRespBatchSetConfig.setRetCode("1");
 		} catch (Exception e) {
 			oRespBatchSetConfig.setRetCode("-1");

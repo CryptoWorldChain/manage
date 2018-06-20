@@ -13,12 +13,12 @@ import org.brewchain.evmapi.gens.Tx.MultiTransactionBody;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionInput;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionOutput;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionSignature;
+import org.brewchain.account.enums.TransTypeEnum;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqSendLockCWS;
-import org.brewchain.manage.gens.Manageimpl.ReqSetNetwork;
 import org.brewchain.manage.gens.Manageimpl.RespDoTxResult;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyStoreHelper;
@@ -33,7 +33,6 @@ import onight.tfw.async.CompleteHandler;
 import onight.tfw.ntrans.api.annotation.ActorRequire;
 import onight.tfw.otransio.api.PacketHelper;
 import onight.tfw.otransio.api.beans.FramePacket;
-import onight.tfw.outils.bean.JsonPBFormat;
 
 @NActorProvider
 @Slf4j
@@ -86,36 +85,36 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oRespDoTxResult.setRetCode("-1");
 				oRespDoTxResult.setRetMsg("pwd or jsonstr error");
 			} else {
-				int nonce = accountHelper.getNonce(encApi.hexDec(oKeyStoreValue.getAddress()));
+				int nonce = accountHelper.getNonce(oKeyStoreValue.getAddress());
 
 				MultiTransaction.Builder oMultiTransaction = MultiTransaction.newBuilder();
 				MultiTransactionBody.Builder oMultiTransactionBody = MultiTransactionBody.newBuilder();
 				MultiTransactionInput.Builder oMultiTransactionInput = MultiTransactionInput.newBuilder();
-				oMultiTransactionInput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
+				oMultiTransactionInput.setAddress(oKeyStoreValue.getAddress());
 				oMultiTransactionInput.setAmount(pb.getAmount());
 				oMultiTransactionInput.setFee(0);
 				oMultiTransactionInput.setFeeLimit(0);
 				oMultiTransactionInput.setNonce(nonce);
-				oMultiTransactionInput.setToken("cws");
+				oMultiTransactionInput.setToken("CWS");
 				oMultiTransactionBody.addInputs(oMultiTransactionInput);
 				MultiTransactionOutput.Builder oMultiTransactionOutput = MultiTransactionOutput.newBuilder();
-				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
+				oMultiTransactionOutput.setAddress(oKeyStoreValue.getAddress());
 				oMultiTransactionOutput.setAmount(pb.getAmount());
 				oMultiTransactionBody.addOutputs(oMultiTransactionOutput);
-				oMultiTransactionBody.setData(ByteString.copyFromUtf8("06"));
-				oMultiTransaction.setTxHash(ByteString.EMPTY);
+				oMultiTransactionBody.setType(TransTypeEnum.TYPE_LockTokenTransaction.value());
+				oMultiTransaction.clearTxHash();
 				oMultiTransactionBody.clearSignatures();
 				oMultiTransactionBody.setTimestamp((new Date()).getTime());
 				// 签名
 				MultiTransactionSignature.Builder oMultiTransactionSignature = MultiTransactionSignature.newBuilder();
-				oMultiTransactionSignature.setPubKey(oKeyStoreValue.getPubKey());
-				oMultiTransactionSignature.setSignature(encApi.hexEnc(encApi.ecSign(oKeyStoreValue.getPriKey(), oMultiTransactionBody.build().toByteArray())));
+//				oMultiTransactionSignature.setPubKey(oKeyStoreValue.get);
+//				oMultiTransactionSignature.setSignature(encApi.hexEnc(encApi.ecSign(oKeyStoreValue.getPriKey(), oMultiTransactionBody.build().toByteArray())));
 				oMultiTransactionBody.addSignatures(oMultiTransactionSignature);
 				oMultiTransaction.setTxBody(oMultiTransactionBody);
 
-				ByteString txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction);
+				String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction);
 				oRespDoTxResult.setRetCode("1");
-				oRespDoTxResult.setTxHash(encApi.hexEnc(txHash.toByteArray()));
+				oRespDoTxResult.setTxHash(txHash);
 			}
 		} catch (Exception e) {
 			if (e.getMessage() != null) {

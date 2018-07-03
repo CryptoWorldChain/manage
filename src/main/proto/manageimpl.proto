@@ -52,7 +52,7 @@ message MsgContract {
 	string codeHash = 2;
 	string code = 3;
 	string data = 4;
-	int32 timestamp = 5;
+	int64 timestamp = 5;
 }
 
 message ReqCreateContract {

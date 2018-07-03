@@ -22,6 +22,18 @@ enum PMANCommand {
     
     SLC = 12;// 发送锁定cws交易
     SUC = 13;// 发送解锁cws交易
+	CCT = 14;// 创建合约
+}
+
+message ReqCreateContract {
+	string pwd = 1;
+	string code = 2;
+}
+
+message RespCreateContract {
+	string contractHash = 1;
+	string retCode = 2;
+    string retMsg = 3;
 }
 
 message ReqSendLockCWS {

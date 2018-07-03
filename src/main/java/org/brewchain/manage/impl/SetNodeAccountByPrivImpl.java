@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.brewchain.manage.util.OEntityBuilder;
 import org.brewchain.account.core.BlockChainConfig;
+import org.brewchain.account.core.KeyConstant;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.bcapi.gens.Oentity.OKey;
 import org.brewchain.bcapi.gens.Oentity.OValue;
@@ -85,6 +86,7 @@ public class SetNodeAccountByPrivImpl extends SessionModules<ReqSetNodeAccountBy
 
 				dao.getAccountDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
 						OEntityBuilder.byteValue2OValue(oKeyStoreValue.toByteArray()));
+				KeyConstant.PWD = pb.getPwd();
 			}
 		} catch (Exception e) {
 			log.error("error on read network::" + e.getMessage());

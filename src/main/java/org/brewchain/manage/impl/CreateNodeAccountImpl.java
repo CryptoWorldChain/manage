@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.brewchain.manage.util.OEntityBuilder;
 import org.brewchain.account.core.BlockChainConfig;
+import org.brewchain.account.core.KeyConstant;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.bcapi.gens.Oentity.OKey;
 import org.brewchain.bcapi.gens.Oentity.OValue;
@@ -61,7 +62,7 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 	public void onPBPacket(final FramePacket pack, final ReqCreateNewAccount pb, final CompleteHandler handler) {
 		RespCreateNewAccount.Builder oRespCreateNewAccount = RespCreateNewAccount.newBuilder();
 
-		KeyPairs oKeyPairs = encApi.genKeys();
+		KeyPairs oKeyPairs = encApi.genKeys("antenna elder knock deer confirm enlist name ball hungry anger indicate under");
 		// 写入文件夹
 		BufferedWriter bw = null;
 		FileWriter fw = null;
@@ -89,6 +90,7 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 
 				dao.getAccountDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
 						OEntityBuilder.byteValue2OValue(encApi.hexDec(oKeyStoreValue.getAddress())));
+				KeyConstant.PWD = pb.getPwd();
 			}
 		} catch (Exception e) {
 			log.error("error on read network::" + e.getMessage());
@@ -111,5 +113,6 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 				oRespCreateNewAccount.setRetMsg(e.getMessage());
 		}
 		handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateNewAccount.build()));
+		return;
 	}
 }

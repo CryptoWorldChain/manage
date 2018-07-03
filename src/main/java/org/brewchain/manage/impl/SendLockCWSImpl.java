@@ -48,7 +48,7 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 	AccountHelper accountHelper;
 	@ActorRequire(name = "Transaction_Helper", scope = "global")
 	TransactionHelper transactionHelper;
-	
+
 	@ActorRequire(name = "BlockChain_Config", scope = "global")
 	BlockChainConfig blockChainConfig;
 
@@ -68,7 +68,8 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 		try {
 			// read file
 			String net = blockChainConfig.getNet();
-			FileReader fr = new FileReader("keystore" + File.separator + net +  File.separator + "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
+			FileReader fr = new FileReader("keystore" + File.separator + net + File.separator + "keystore"
+					+ blockChainConfig.getKeystoreNumber() + ".json");
 			BufferedReader br = new BufferedReader(fr);
 			String keyStoreJsonStr = "";
 
@@ -85,12 +86,12 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oRespDoTxResult.setRetCode("-1");
 				oRespDoTxResult.setRetMsg("pwd or jsonstr error");
 			} else {
-				int nonce = accountHelper.getNonce(oKeyStoreValue.getAddress());
+				int nonce = accountHelper.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 
 				MultiTransaction.Builder oMultiTransaction = MultiTransaction.newBuilder();
 				MultiTransactionBody.Builder oMultiTransactionBody = MultiTransactionBody.newBuilder();
 				MultiTransactionInput.Builder oMultiTransactionInput = MultiTransactionInput.newBuilder();
-				oMultiTransactionInput.setAddress(oKeyStoreValue.getAddress());
+				oMultiTransactionInput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 				oMultiTransactionInput.setAmount(pb.getAmount());
 				oMultiTransactionInput.setFee(0);
 				oMultiTransactionInput.setFeeLimit(0);
@@ -98,7 +99,7 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionInput.setToken("CWS");
 				oMultiTransactionBody.addInputs(oMultiTransactionInput);
 				MultiTransactionOutput.Builder oMultiTransactionOutput = MultiTransactionOutput.newBuilder();
-				oMultiTransactionOutput.setAddress(oKeyStoreValue.getAddress());
+				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 				oMultiTransactionOutput.setAmount(pb.getAmount());
 				oMultiTransactionBody.addOutputs(oMultiTransactionOutput);
 				oMultiTransactionBody.setType(TransTypeEnum.TYPE_LockTokenTransaction.value());
@@ -107,8 +108,9 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionBody.setTimestamp((new Date()).getTime());
 				// 签名
 				MultiTransactionSignature.Builder oMultiTransactionSignature = MultiTransactionSignature.newBuilder();
-//				oMultiTransactionSignature.setPubKey(oKeyStoreValue.get);
-//				oMultiTransactionSignature.setSignature(encApi.hexEnc(encApi.ecSign(oKeyStoreValue.getPriKey(), oMultiTransactionBody.build().toByteArray())));
+				oMultiTransactionSignature.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
+				oMultiTransactionSignature.setSignature(ByteString.copyFrom(
+						encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 				oMultiTransactionBody.addSignatures(oMultiTransactionSignature);
 				oMultiTransaction.setTxBody(oMultiTransactionBody);
 

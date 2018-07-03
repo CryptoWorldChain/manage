@@ -23,6 +23,36 @@ enum PMANCommand {
     SLC = 12;// 发送锁定cws交易
     SUC = 13;// 发送解锁cws交易
 	CCT = 14;// 创建合约
+	CET = 15;// 调用合约
+	GLC = 16;// 获取合约列表
+	GNT = 17;// 获取节点交易信息，未发送的，未打包的
+
+}
+
+message ReqGetNodeTransactionInfo {
+
+}
+
+message RespGetNodeTransactionInfo {
+	int32 waitSend = 1;
+	int32 waitBlock = 2;
+}
+
+message ReqGetContractList {
+}
+
+message RespGetContractList {
+	string retCode = 1;
+    string retMsg = 2;
+	repeated MsgContract contracts = 3;
+}
+
+message MsgContract {
+	string hash = 1;
+	string codeHash = 2;
+	string code = 3;
+	string data = 4;
+	int32 timestamp = 5;
 }
 
 message ReqCreateContract {

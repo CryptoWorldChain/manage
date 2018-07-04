@@ -61,7 +61,7 @@ public class RegisterImpl extends SessionModules<ReqRegister> {
 			AdministratorAccountValue.Builder oAdministratorAccountValue = AdministratorAccountValue.newBuilder();
 			oAdministratorAccountValue.setPwd(encApi.hexEnc(encApi.sha256Encode(pb.getPwd().getBytes())));
 			oAdministratorAccountValue.setToken(token);
-			oAdministratorAccountValue.setLastLoginTime((new Date()).getTime());
+			oAdministratorAccountValue.setLastLoginTime(System.currentTimeMillis());
 
 			dao.getManageDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.ADMINISTRATOR_KEY.getBytes()),
 					OEntityBuilder.byteValue2OValue(oAdministratorAccountValue.build().toByteArray()));

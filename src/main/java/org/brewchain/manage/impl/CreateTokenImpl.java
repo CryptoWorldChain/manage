@@ -22,8 +22,10 @@ import org.brewchain.manage.gens.Manageimpl.PMANCommand;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Manageimpl.ReqCreateContract;
 import org.brewchain.manage.gens.Manageimpl.ReqCreateNewAccount;
+import org.brewchain.manage.gens.Manageimpl.ReqCreateToken;
 import org.brewchain.manage.gens.Manageimpl.RespCreateContract;
 import org.brewchain.manage.gens.Manageimpl.RespCreateNewAccount;
+import org.brewchain.manage.gens.Manageimpl.RespCreateToken;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyStoreHelper;
 
@@ -41,7 +43,7 @@ import onight.tfw.otransio.api.beans.FramePacket;
 @NActorProvider
 @Slf4j
 @Data
-public class CreateContractImpl extends SessionModules<ReqCreateContract> {
+public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 	@ActorRequire(name = "man_Daos", scope = "global")
 	ManageDaos dao;
 	@ActorRequire(name = "bc_encoder", scope = "global")
@@ -57,7 +59,7 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 
 	@Override
 	public String[] getCmds() {
-		return new String[] { PMANCommand.CCT.name() };
+		return new String[] { PMANCommand.CTT.name() };
 	}
 
 	@Override
@@ -66,14 +68,14 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 	}
 
 	@Override
-	public void onPBPacket(final FramePacket pack, final ReqCreateContract pb, final CompleteHandler handler) {
-		RespCreateContract.Builder oRespCreateContract = RespCreateContract.newBuilder();
+	public void onPBPacket(final FramePacket pack, final ReqCreateToken pb, final CompleteHandler handler) {
+		RespCreateToken.Builder oRespCreateToken = RespCreateToken.newBuilder();
 
 		try {
 			if (StringUtils.isBlank(pb.getPwd())) {
-				oRespCreateContract.setRetCode("-1");
-				oRespCreateContract.setRetMsg("password cannot be empty");
-				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateContract.build()));
+				oRespCreateToken.setRetCode("-1");
+				oRespCreateToken.setRetMsg("password cannot be empty");
+				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
 				return;
 			}
 
@@ -95,45 +97,36 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 
 				KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreJsonStr, pb.getPwd());
 				if (oKeyStoreValue == null) {
-					oRespCreateContract.setRetCode("-1");
-					oRespCreateContract.setRetMsg("keystore file or password invalid");
+					oRespCreateToken.setRetCode("-1");
+					oRespCreateToken.setRetMsg("keystore file or password invalid");
 				} else {
-					CodeBuild.Build cvm = CodeBuild.newBuild(CodeBuild.Type.SOLIDITY);
-					CodeBuild.Result ret = cvm.build(pb.getCode());
-
 					MultiTransaction.Builder oMultiTransaction = MultiTransaction.newBuilder();
 					MultiTransactionBody.Builder oMultiTransactionBody = MultiTransactionBody.newBuilder();
-
+					
 					MultiTransactionInput.Builder oMultiTransactionInput4 = MultiTransactionInput.newBuilder();
 					oMultiTransactionInput4.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
-					oMultiTransactionInput4.setAmount(0);
+					oMultiTransactionInput4.setAmount(pb.getTotal());
 					oMultiTransactionInput4.setFee(0);
 					oMultiTransactionInput4.setFeeLimit(0);
-					int nonce = oAccountHelper
-							.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
+					int nonce = oAccountHelper.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 					oMultiTransactionInput4.setNonce(nonce);
+					oMultiTransactionInput4.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
+					oMultiTransactionInput4.setToken(pb.getToken());
 					oMultiTransactionBody.addInputs(oMultiTransactionInput4);
-					oMultiTransactionBody.setType(TransTypeEnum.TYPE_CreateContract.value());
-					oMultiTransactionBody.setData(ByteString.copyFrom(encApi.hexDec(ret.data)));
-					oMultiTransactionBody.setExdata(ByteString.copyFromUtf8(ret.exdata));
+					oMultiTransactionBody.setType(TransTypeEnum.TYPE_CreateToken.value());
 					oMultiTransaction.clearTxHash();
 					oMultiTransactionBody.clearSignatures();
 					oMultiTransactionBody.setTimestamp(System.currentTimeMillis());
 					// 签名
-					MultiTransactionSignature.Builder oMultiTransactionSignature21 = MultiTransactionSignature
-							.newBuilder();
-					oMultiTransactionSignature21
-							.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
+					MultiTransactionSignature.Builder oMultiTransactionSignature21 = MultiTransactionSignature.newBuilder();
+					oMultiTransactionSignature21.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
 					oMultiTransactionSignature21.setSignature(ByteString.copyFrom(
 							encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 					oMultiTransactionBody.addSignatures(oMultiTransactionSignature21);
 					oMultiTransaction.setTxBody(oMultiTransactionBody);
-
-					oRespCreateContract.setContractHash(encApi.hexEnc(transactionHelper
-							.getContractAddressByTransaction(oMultiTransaction.build()).toByteArray()));
-
 					String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction);
-					oRespCreateContract.setRetCode("1");
+					oRespCreateToken.setTxHash(txHash);
+					oRespCreateToken.setRetCode("1");
 				}
 			} catch (Throwable e) {
 				if (br != null) {
@@ -146,10 +139,10 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 			}
 
 		} catch (Throwable e) {
-			oRespCreateContract.setRetCode("-1");
-			oRespCreateContract.setRetMsg(e.getMessage());
+			oRespCreateToken.setRetCode("-1");
+			oRespCreateToken.setRetMsg(e.getMessage());
 		}
-		handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateContract.build()));
+		handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
 		return;
 	}
 }

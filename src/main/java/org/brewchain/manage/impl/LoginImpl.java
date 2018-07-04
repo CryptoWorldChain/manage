@@ -67,7 +67,7 @@ public class LoginImpl extends SessionModules<ReqLogin> {
 				oRespLogin.setToken(token);
 				
 				oAdministratorAccountValue.setToken(token);
-				oAdministratorAccountValue.setLastLoginTime((new Date()).getTime());
+				oAdministratorAccountValue.setLastLoginTime(System.currentTimeMillis());
 
 				dao.getManageDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.ADMINISTRATOR_KEY.getBytes()),
 						OEntityBuilder.byteValue2OValue(oAdministratorAccountValue.build().toByteArray()));

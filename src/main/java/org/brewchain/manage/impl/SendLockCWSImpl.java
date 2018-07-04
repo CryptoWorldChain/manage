@@ -105,7 +105,7 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionBody.setType(TransTypeEnum.TYPE_LockTokenTransaction.value());
 				oMultiTransaction.clearTxHash();
 				oMultiTransactionBody.clearSignatures();
-				oMultiTransactionBody.setTimestamp((new Date()).getTime());
+				oMultiTransactionBody.setTimestamp(System.currentTimeMillis());
 				// 签名
 				MultiTransactionSignature.Builder oMultiTransactionSignature = MultiTransactionSignature.newBuilder();
 				oMultiTransactionSignature.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));

@@ -27,10 +27,41 @@ enum PMANCommand {
 	GLC = 16;// 获取合约列表
 	GNT = 17;// 获取节点交易信息，未发送的，未打包的
 
+    CTT = 18;// 创建Token
+    GTT = 19;// 查询Token
+}
+
+message ReqCreateToken {
+    string token = 1;
+    string pwd = 2;
+    int64 total = 3;
+}
+
+message RespCreateToken {
+    string retCode = 1;
+    string retMsg = 2;
+    string txHash = 3;
+}
+
+message ReqQueryToken {
+    string token = 1;
+    string address =2;
+}
+
+message RespQueryToken {
+    string retCode = 1;
+    string retMsg = 2;
+    repeated MsgToken tokens = 3;
+}
+
+message MsgToken {
+    string token = 1;
+    string total = 2;
+    string timestamp = 3;
 }
 
 message ReqGetNodeTransactionInfo {
-
+     
 }
 
 message RespGetNodeTransactionInfo {

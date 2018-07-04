@@ -70,7 +70,7 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 		oRespGetNodeInfo.setOsName(props.getProperty("os.name"));
 		oRespGetNodeInfo.setOsTimeZone(TimeZone.getDefault().getDisplayName());
 		oRespGetNodeInfo.setOsVersion(props.getProperty("os.version"));
-		oRespGetNodeInfo.setServerTime(String.valueOf((new Date()).getTime()));
+		oRespGetNodeInfo.setServerTime(String.valueOf(System.currentTimeMillis()));
 		oRespGetNodeInfo.setServerType(props.getProperty("os.arch"));
 
 		Network oRaftNetwork = dao.getPzp().networkByID("raft");

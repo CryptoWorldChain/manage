@@ -10,6 +10,7 @@ import org.brewchain.account.core.BlockChainConfig;
 import org.brewchain.evmapi.gens.Act.Account;
 import org.brewchain.evmapi.gens.Act.AccountTokenValue;
 import org.brewchain.bcapi.gens.Oentity.OValue;
+import org.brewchain.bcvm.utils.ByteUtil;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANModule;
 import org.brewchain.manage.gens.Node.DposNodeInfo;
@@ -107,7 +108,7 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 			List<AccountTokenValue> tokenValues = account.getValue().getTokensList();
 			for(AccountTokenValue token : tokenValues){
 				if (token.getToken().equals("CWS")) {
-					oRespGetNodeInfo.setCwstotal(token.getBalance());
+					oRespGetNodeInfo.setCwstotal(String.valueOf(ByteUtil.bytesToBigInteger(token.getBalance().toByteArray())));
 				}
 			}
 			
@@ -126,7 +127,7 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 				oRespGetNodeInfo.setNetwork(oNodeNetwork);
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error("未知异常:" + e.getMessage());
 		}
 
 		handler.onFinished(PacketHelper.toPBReturn(pack, oRespGetNodeInfo.build()));

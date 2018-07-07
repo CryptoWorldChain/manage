@@ -62,7 +62,7 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 	public void onPBPacket(final FramePacket pack, final ReqCreateNewAccount pb, final CompleteHandler handler) {
 		RespCreateNewAccount.Builder oRespCreateNewAccount = RespCreateNewAccount.newBuilder();
 
-		KeyPairs oKeyPairs = encApi.genKeys("antenna elder knock deer confirm enlist name ball hungry anger indicate under");
+		KeyPairs oKeyPairs = encApi.genKeys();
 		// 写入文件夹
 		BufferedWriter bw = null;
 		FileWriter fw = null;

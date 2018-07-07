@@ -6,6 +6,7 @@ import java.util.List;
 import org.brewchain.account.core.AccountHelper;
 import org.brewchain.bcapi.gens.Oentity.OValue;
 import org.brewchain.evmapi.gens.Act.Account;
+import org.brewchain.evmapi.gens.Act.AccountContractValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.MsgContract;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
@@ -57,18 +58,19 @@ public class GetContractListImpl extends SessionModules<ReqGetContractList> {
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespGetContractList.setRetCode("-1");
-				oRespGetContractList.setRetMsg("not found node account");
+				oRespGetContractList.setRetMsg("没有找到节点账户");
 			} else {
-				List<Account> list = oAccountHelper.getContractByCreator(oOValue.getExtdata());
-				List<MsgContract> contracts = new ArrayList<>();
-				for (Account contract : list) {
+				List<AccountContractValue> list = oAccountHelper.getContractByCreator(oOValue.getExtdata());
+				
+				for (AccountContractValue oAccountContractValue : list) {
 					MsgContract.Builder oMsgContract = MsgContract.newBuilder();
-
+					Account contract = oAccountHelper
+							.GetAccount(ByteString.copyFrom(encApi.hexDec(oAccountContractValue.getContractHash())));
 					oMsgContract.setCode(encApi.hexEnc(contract.getValue().getCode().toByteArray()));
 					oMsgContract.setCodeHash(encApi.hexEnc(contract.getValue().getCodeHash().toByteArray()));
-					oMsgContract.setData(encApi.hexEnc(contract.getValue().getData().toByteArray()));
+					oMsgContract.setData(contract.getValue().getData().toStringUtf8());
 					oMsgContract.setHash(encApi.hexEnc(contract.getAddress().toByteArray()));
-					oMsgContract.setTimestamp(contract.getValue().getTimestamp());
+					oMsgContract.setTimestamp(oAccountContractValue.getTimestamp());
 
 					oRespGetContractList.addContracts(oMsgContract.build());
 				}

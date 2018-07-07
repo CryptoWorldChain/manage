@@ -3,6 +3,7 @@ package org.brewchain.manage.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import org.brewchain.account.enums.TransTypeEnum;
 import org.brewchain.account.util.OEntityBuilder;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.bcvm.CodeBuild;
+import org.brewchain.core.util.ByteUtil;
 import org.brewchain.evmapi.gens.Tx.MultiTransaction;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionBody;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionInput;
@@ -96,7 +98,7 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 				KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreJsonStr, pb.getPwd());
 				if (oKeyStoreValue == null) {
 					oRespCreateContract.setRetCode("-1");
-					oRespCreateContract.setRetMsg("keystore file or password invalid");
+					oRespCreateContract.setRetMsg("秘钥文件或者密码错误");
 				} else {
 					CodeBuild.Build cvm = CodeBuild.newBuild(CodeBuild.Type.SOLIDITY);
 					CodeBuild.Result ret = cvm.build(pb.getCode());
@@ -106,9 +108,7 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 
 					MultiTransactionInput.Builder oMultiTransactionInput4 = MultiTransactionInput.newBuilder();
 					oMultiTransactionInput4.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
-					oMultiTransactionInput4.setAmount(0);
-					oMultiTransactionInput4.setFee(0);
-					oMultiTransactionInput4.setFeeLimit(0);
+					oMultiTransactionInput4.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(BigInteger.ZERO)));
 					int nonce = oAccountHelper
 							.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 					oMultiTransactionInput4.setNonce(nonce);
@@ -147,7 +147,7 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 
 		} catch (Throwable e) {
 			oRespCreateContract.setRetCode("-1");
-			oRespCreateContract.setRetMsg(e.getMessage());
+			oRespCreateContract.setRetMsg("未知异常:" + e.getMessage());
 		}
 		handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateContract.build()));
 		return;

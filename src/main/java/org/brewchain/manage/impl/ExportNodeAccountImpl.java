@@ -69,7 +69,7 @@ public class ExportNodeAccountImpl extends SessionModules<ReqExportNodeAccount> 
 			KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreJsonStr, pb.getPwd());
 			if (oKeyStoreValue == null) {
 				oRespExportNodeAccount.setRetCode("-1");
-				oRespExportNodeAccount.setRetMsg("pwd or jsonstr error");
+				oRespExportNodeAccount.setRetMsg("秘钥文件或密码错误");
 			}else {
 				oRespExportNodeAccount.setRetCode("1");
 				oRespExportNodeAccount.setKeyStoreJsonStr(keyStoreHelper.parseToJsonStr(keyStoreHelper.parse(keyStoreJsonStr)));

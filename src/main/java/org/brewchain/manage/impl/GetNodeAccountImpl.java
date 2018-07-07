@@ -58,7 +58,7 @@ public class GetNodeAccountImpl extends SessionModules<ReqGetNodeAccount> {
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespGetNodeAccount.setRetCode("-1");
-				oRespGetNodeAccount.setRetMsg("not found");
+				oRespGetNodeAccount.setRetMsg("没有找到节点账户");
 			} else {
 				oRespGetNodeAccount.setAddress(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
 				oRespGetNodeAccount.setRetCode("1");

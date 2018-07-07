@@ -3,6 +3,7 @@ package org.brewchain.manage.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import org.brewchain.manage.gens.Manageimpl.ReqCreateToken;
 import org.brewchain.manage.gens.Manageimpl.RespCreateContract;
 import org.brewchain.manage.gens.Manageimpl.RespCreateNewAccount;
 import org.brewchain.manage.gens.Manageimpl.RespCreateToken;
+import org.brewchain.rcvm.utils.ByteUtil;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyStoreHelper;
 
@@ -74,7 +76,30 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 		try {
 			if (StringUtils.isBlank(pb.getPwd())) {
 				oRespCreateToken.setRetCode("-1");
-				oRespCreateToken.setRetMsg("password cannot be empty");
+				oRespCreateToken.setRetMsg("请输入账户密码");
+				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
+				return;
+			}
+
+			if (pb.getToken().length() > 8 || pb.getToken().length() < 3) {
+				oRespCreateToken.setRetCode("-1");
+				oRespCreateToken.setRetMsg("Token名称长度必须介于3到8之间");
+				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
+				return;
+			}
+
+			if (pb.getToken().toUpperCase().startsWith("CW")) {
+				oRespCreateToken.setRetCode("-1");
+				oRespCreateToken.setRetMsg("Token名称不能已CW开头");
+				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
+				return;
+			}
+
+			if (new BigInteger("10000000000000000000000000000")
+					.compareTo(new BigInteger(pb.getTotal() + "000000000000000000")) == 1
+					|| new BigInteger(pb.getTotal() + "000000000000000000").compareTo(BigInteger.ZERO) == -1) {
+				oRespCreateToken.setRetCode("-1");
+				oRespCreateToken.setRetMsg("Token发行总量输入错误");
 				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
 				return;
 			}
@@ -102,24 +127,26 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 				} else {
 					MultiTransaction.Builder oMultiTransaction = MultiTransaction.newBuilder();
 					MultiTransactionBody.Builder oMultiTransactionBody = MultiTransactionBody.newBuilder();
-					
+
 					MultiTransactionInput.Builder oMultiTransactionInput4 = MultiTransactionInput.newBuilder();
 					oMultiTransactionInput4.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
-					oMultiTransactionInput4.setAmount(pb.getTotal());
-					oMultiTransactionInput4.setFee(0);
-					oMultiTransactionInput4.setFeeLimit(0);
-					int nonce = oAccountHelper.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
+					oMultiTransactionInput4.setAmount(ByteString.copyFrom(
+							ByteUtil.bigIntegerToBytes(new BigInteger(pb.getTotal() + "000000000000000000"))));
+					int nonce = oAccountHelper
+							.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 					oMultiTransactionInput4.setNonce(nonce);
 					oMultiTransactionInput4.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
-					oMultiTransactionInput4.setToken(pb.getToken());
+					oMultiTransactionInput4.setToken(pb.getToken().toUpperCase());
 					oMultiTransactionBody.addInputs(oMultiTransactionInput4);
 					oMultiTransactionBody.setType(TransTypeEnum.TYPE_CreateToken.value());
 					oMultiTransaction.clearTxHash();
 					oMultiTransactionBody.clearSignatures();
 					oMultiTransactionBody.setTimestamp(System.currentTimeMillis());
 					// 签名
-					MultiTransactionSignature.Builder oMultiTransactionSignature21 = MultiTransactionSignature.newBuilder();
-					oMultiTransactionSignature21.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
+					MultiTransactionSignature.Builder oMultiTransactionSignature21 = MultiTransactionSignature
+							.newBuilder();
+					oMultiTransactionSignature21
+							.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
 					oMultiTransactionSignature21.setSignature(ByteString.copyFrom(
 							encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 					oMultiTransactionBody.addSignatures(oMultiTransactionSignature21);
@@ -140,7 +167,7 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 
 		} catch (Throwable e) {
 			oRespCreateToken.setRetCode("-1");
-			oRespCreateToken.setRetMsg(e.getMessage());
+			oRespCreateToken.setRetMsg("未知异常:" + e.getMessage());
 		}
 		handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));
 		return;

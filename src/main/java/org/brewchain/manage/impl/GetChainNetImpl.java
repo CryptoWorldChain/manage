@@ -50,7 +50,7 @@ public class GetChainNetImpl extends SessionModules<ReqGetNetwork> {
 				String net = this.props().get(ManageKeys.NODE_NET, null);
 				if (net == null) {
 					oRespGetNetwork.setRetCode("-1");
-					oRespGetNetwork.setRetMsg("chain net not found");
+					oRespGetNetwork.setRetMsg("没有设置节点网络");
 				} else {
 					oRespGetNetwork.setRetCode("1");
 					oRespGetNetwork.setNetwork(net);

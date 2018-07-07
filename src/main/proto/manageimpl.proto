@@ -29,12 +29,23 @@ enum PMANCommand {
 
     CTT = 18;// 创建Token
     GTT = 19;// 查询Token
+
+    ESS = 20;// 执行shell命令
+}
+
+message ReqExecShell{
+	string shell = 1;
+}
+
+message RespExecShell {
+    string retCode = 1;
+    string retMsg = 2;
 }
 
 message ReqCreateToken {
     string token = 1;
     string pwd = 2;
-    int64 total = 3;
+    string total = 3;
 }
 
 message RespCreateToken {
@@ -99,7 +110,7 @@ message RespCreateContract {
 
 message ReqSendLockCWS {
 	string pwd = 1;
-	int32 amount = 2;
+	string amount = 2;
 }
 
 message ReqSendUnLockCWS {}
@@ -223,10 +234,10 @@ message RespGetNodeAccount {
 
 message AccountValueImpl {
     int32 nonce = 1;
-    int64 balance = 2;
+    string balance = 2;
     string pubKey = 3;
-    int64 max = 4;
-    int64 acceptMax = 5;
+    string max = 4;
+    string acceptMax = 5;
     int32 acceptLimit = 6;
     repeated string address = 7;
     repeated AccountTokenValueImpl tokens = 8;
@@ -235,7 +246,7 @@ message AccountValueImpl {
 
 message AccountTokenValueImpl {
     string token = 1;
-    int64 balance = 2;
+    string balance = 2;
 }
 
 message AccountCryptoValueImpl {

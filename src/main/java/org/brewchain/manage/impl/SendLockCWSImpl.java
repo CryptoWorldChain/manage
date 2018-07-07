@@ -3,6 +3,7 @@ package org.brewchain.manage.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.brewchain.account.core.AccountHelper;
@@ -14,6 +15,7 @@ import org.brewchain.evmapi.gens.Tx.MultiTransactionInput;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionOutput;
 import org.brewchain.evmapi.gens.Tx.MultiTransactionSignature;
 import org.brewchain.account.enums.TransTypeEnum;
+import org.brewchain.account.util.ByteUtil;
 import org.brewchain.bcapi.gens.Oentity.KeyStoreValue;
 import org.brewchain.manage.dao.ManageDaos;
 import org.brewchain.manage.gens.Manageimpl.PMANCommand;
@@ -92,15 +94,14 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				MultiTransactionBody.Builder oMultiTransactionBody = MultiTransactionBody.newBuilder();
 				MultiTransactionInput.Builder oMultiTransactionInput = MultiTransactionInput.newBuilder();
 				oMultiTransactionInput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
-				oMultiTransactionInput.setAmount(pb.getAmount());
-				oMultiTransactionInput.setFee(0);
-				oMultiTransactionInput.setFeeLimit(0);
+				oMultiTransactionInput
+						.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(new BigInteger(pb.getAmount()))));
 				oMultiTransactionInput.setNonce(nonce);
 				oMultiTransactionInput.setToken("CWS");
 				oMultiTransactionBody.addInputs(oMultiTransactionInput);
 				MultiTransactionOutput.Builder oMultiTransactionOutput = MultiTransactionOutput.newBuilder();
 				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
-				oMultiTransactionOutput.setAmount(pb.getAmount());
+				oMultiTransactionOutput.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(new BigInteger(pb.getAmount()))));
 				oMultiTransactionBody.addOutputs(oMultiTransactionOutput);
 				oMultiTransactionBody.setType(TransTypeEnum.TYPE_LockTokenTransaction.value());
 				oMultiTransaction.clearTxHash();

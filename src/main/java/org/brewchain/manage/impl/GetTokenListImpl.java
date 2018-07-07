@@ -61,7 +61,7 @@ public class GetTokenListImpl extends SessionModules<ReqQueryToken> {
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespQueryToken.setRetCode("-1");
-				oRespQueryToken.setRetMsg("not found node account");
+				oRespQueryToken.setRetMsg("没有找到节点账户");
 			} else {
 				List<ERC20TokenValue> list = oAccountHelper.getTokens(pb.getAddress(), pb.getToken());
 				for (ERC20TokenValue token : list) {

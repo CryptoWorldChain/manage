@@ -30,6 +30,7 @@ import org.brewchain.manage.gens.Manageimpl.RespCreateToken;
 import org.brewchain.rcvm.utils.ByteUtil;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyStoreHelper;
+import org.fc.brewchain.bcapi.UnitUtil;
 
 import com.google.protobuf.ByteString;
 
@@ -95,9 +96,8 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 				return;
 			}
 
-			if (new BigInteger("10000000000000000000000000000")
-					.compareTo(new BigInteger(pb.getTotal() + "000000000000000000")) == 1
-					|| new BigInteger(pb.getTotal() + "000000000000000000").compareTo(BigInteger.ZERO) == -1) {
+			if (UnitUtil.compareTo(blockChainConfig.getMaxTokenTotal(), UnitUtil.toWei(pb.getTotal())) == -1
+					|| UnitUtil.compareTo(UnitUtil.toWei(pb.getTotal()), blockChainConfig.getMinTokenTotal()) == -1) {
 				oRespCreateToken.setRetCode("-1");
 				oRespCreateToken.setRetMsg("Token发行总量输入错误");
 				handler.onFinished(PacketHelper.toPBReturn(pack, oRespCreateToken.build()));

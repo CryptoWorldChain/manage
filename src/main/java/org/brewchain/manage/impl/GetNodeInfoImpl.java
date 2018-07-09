@@ -46,10 +46,10 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 	EncAPI encApi;
 	@ActorRequire(name = "KeyStore_Helper", scope = "global")
 	KeyStoreHelper keyStoreHelper;
-	
+
 	@ActorRequire(name = "BlockChain_Config", scope = "global")
 	BlockChainConfig blockChainConfig;
-	
+
 	@ActorRequire(name = "Account_Helper", scope = "global")
 	AccountHelper oAccountHelper;
 
@@ -103,15 +103,15 @@ public class GetNodeInfoImpl extends SessionModules<ReqGetNodeInfo> {
 			} else {
 				oRespGetNodeInfo.setAddress(encApi.hexEnc(oOValue.getExtdata().toByteArray()));
 			}
-			
+
 			Account account = oAccountHelper.GetAccount(oOValue.getExtdata());
 			List<AccountTokenValue> tokenValues = account.getValue().getTokensList();
-			for(AccountTokenValue token : tokenValues){
+			for (AccountTokenValue token : tokenValues) {
 				if (token.getToken().equals("CWS")) {
-					oRespGetNodeInfo.setCwstotal(String.valueOf(ByteUtil.bytesToBigInteger(token.getBalance().toByteArray())));
+					oRespGetNodeInfo
+							.setCwstotal(String.valueOf(ByteUtil.bytesToBigInteger(token.getBalance().toByteArray())));
 				}
 			}
-			
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}

@@ -63,7 +63,8 @@ public class SetNodeAccountImpl extends SessionModules<ReqSetNodeAccount> {
 			BufferedWriter bw = null;
 			FileWriter fw = null;
 			try {
-				File keyStoreFile = new File("keystore" + File.separator + blockChainConfig.getNet() +  File.separator + "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
+				File keyStoreFile = new File("keystore" + File.separator + blockChainConfig.getNet() + File.separator
+						+ "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
 				if (keyStoreFile.exists()) {
 					keyStoreFile.delete();
 				}
@@ -79,7 +80,7 @@ public class SetNodeAccountImpl extends SessionModules<ReqSetNodeAccount> {
 
 					oRespSetNodeAccount.setRetCode("1");
 					dao.getAccountDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
-							OEntityBuilder.byteValue2OValue(oKeyStoreValue.toByteArray()));
+							OEntityBuilder.byteValue2OValue(encApi.hexDec(oKeyStoreValue.getAddress())));
 					KeyConstant.PWD = pb.getPwd();
 				}
 			} catch (Exception e) {

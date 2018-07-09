@@ -57,18 +57,17 @@ public class SetNodeAccountByPrivImpl extends SessionModules<ReqSetNodeAccountBy
 	@Override
 	public void onPBPacket(final FramePacket pack, final ReqSetNodeAccountByPriv pb, final CompleteHandler handler) {
 		RespSetNodeAccount.Builder oRespSetNodeAccount = RespSetNodeAccount.newBuilder();
-
-		String address = encApi.priKeyToAddress(pb.getPriv());
-
 		// 写入文件夹
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
-			KeyStoreFile oKeyStoreFile = keyStoreHelper.generate(address, pb.getPriv(), "", "", pb.getPwd());
+			KeyStoreFile oKeyStoreFile = keyStoreHelper.generate(encApi.priKeyToAddress(pb.getPriv()), pb.getPriv(),
+					encApi.priKeyToPubKey(pb.getPriv()), "", pb.getPwd());
 			String keyStoreFileStr = keyStoreHelper.parseToJsonStr(oKeyStoreFile);
 			KeyStoreValue oKeyStoreValue = keyStoreHelper.getKeyStore(keyStoreFileStr, pb.getPwd());
 
-			File keyStoreFile = new File("keystore" + File.separator + blockChainConfig.getNet() +  File.separator + "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
+			File keyStoreFile = new File("keystore" + File.separator + blockChainConfig.getNet() + File.separator
+					+ "keystore" + blockChainConfig.getKeystoreNumber() + ".json");
 			if (keyStoreFile.exists()) {
 				keyStoreFile.delete();
 			}
@@ -85,7 +84,7 @@ public class SetNodeAccountByPrivImpl extends SessionModules<ReqSetNodeAccountBy
 				oRespSetNodeAccount.setRetCode("1");
 
 				dao.getAccountDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
-						OEntityBuilder.byteValue2OValue(oKeyStoreValue.toByteArray()));
+						OEntityBuilder.byteValue2OValue(encApi.hexDec(oKeyStoreValue.getAddress())));
 				KeyConstant.PWD = pb.getPwd();
 			}
 		} catch (Exception e) {

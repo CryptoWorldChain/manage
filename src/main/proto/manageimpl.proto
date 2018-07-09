@@ -31,6 +31,17 @@ enum PMANCommand {
     GTT = 19;// 查询Token
 
     ESS = 20;// 执行shell命令
+    CPW = 21;// 修改密码
+}
+
+message ReqChangePassword {
+	string old = 1;
+	string new = 2;
+}
+
+message RespChangePassword {
+    string retCode = 1;
+    string retMsg = 2;
 }
 
 message ReqExecShell{

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.brewchain.account.core.AccountHelper;
 import org.brewchain.bcapi.gens.Oentity.OValue;
+import org.brewchain.core.util.ByteUtil;
 import org.brewchain.evmapi.gens.Act.Account;
 import org.brewchain.evmapi.gens.Act.ERC20TokenValue;
 import org.brewchain.manage.dao.ManageDaos;
@@ -20,6 +21,7 @@ import org.brewchain.manage.gens.Manageimpl.RespQueryToken;
 import org.brewchain.manage.util.ManageKeys;
 import org.brewchain.manage.util.OEntityBuilder;
 import org.fc.brewchain.bcapi.EncAPI;
+import org.fc.brewchain.bcapi.UnitUtil;
 
 import com.google.protobuf.ByteString;
 
@@ -68,7 +70,8 @@ public class GetTokenListImpl extends SessionModules<ReqQueryToken> {
 					MsgToken.Builder oMsgToken = MsgToken.newBuilder();
 					oMsgToken.setTimestamp(String.valueOf(token.getTimestamp()));
 					oMsgToken.setToken(token.getToken());
-					oMsgToken.setTotal(token.getToken());
+					oMsgToken.setTotal(String
+							.valueOf(UnitUtil.fromWei(ByteUtil.bytesToBigInteger(token.getTotal().toByteArray()))));
 					oRespQueryToken.addTokens(oMsgToken.build());
 				}
 				oRespQueryToken.setRetCode("1");

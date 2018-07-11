@@ -24,6 +24,7 @@ import org.brewchain.manage.gens.Manageimpl.ReqSendLockCWS;
 import org.brewchain.manage.gens.Manageimpl.RespDoTxResult;
 import org.fc.brewchain.bcapi.EncAPI;
 import org.fc.brewchain.bcapi.KeyStoreHelper;
+import org.fc.brewchain.bcapi.UnitUtil;
 
 import com.google.protobuf.ByteString;
 
@@ -95,14 +96,14 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				MultiTransactionInput.Builder oMultiTransactionInput = MultiTransactionInput.newBuilder();
 				oMultiTransactionInput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 				oMultiTransactionInput
-						.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(new BigInteger(pb.getAmount()))));
+						.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(UnitUtil.toWei(pb.getAmount()))));
 				oMultiTransactionInput.setNonce(nonce);
 				oMultiTransactionInput.setToken("CWS");
 				oMultiTransactionBody.addInputs(oMultiTransactionInput);
-				MultiTransactionOutput.Builder oMultiTransactionOutput = MultiTransactionOutput.newBuilder();
-				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
-				oMultiTransactionOutput.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(new BigInteger(pb.getAmount()))));
-				oMultiTransactionBody.addOutputs(oMultiTransactionOutput);
+//				MultiTransactionOutput.Builder oMultiTransactionOutput = MultiTransactionOutput.newBuilder();
+//				oMultiTransactionOutput.setAddress(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
+//				oMultiTransactionOutput.setAmount(ByteString.copyFrom(ByteUtil.bigIntegerToBytes(new BigInteger(pb.getAmount()))));
+//				oMultiTransactionBody.addOutputs(oMultiTransactionOutput);
 				oMultiTransactionBody.setType(TransTypeEnum.TYPE_LockTokenTransaction.value());
 				oMultiTransaction.clearTxHash();
 				oMultiTransactionBody.clearSignatures();

@@ -135,7 +135,6 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 					int nonce = oAccountHelper
 							.getNonce(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getAddress())));
 					oMultiTransactionInput4.setNonce(nonce);
-					oMultiTransactionInput4.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
 					oMultiTransactionInput4.setToken(pb.getToken().toUpperCase());
 					oMultiTransactionBody.addInputs(oMultiTransactionInput4);
 					oMultiTransactionBody.setType(TransTypeEnum.TYPE_CreateToken.value());
@@ -145,8 +144,6 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 					// 签名
 					MultiTransactionSignature.Builder oMultiTransactionSignature21 = MultiTransactionSignature
 							.newBuilder();
-					oMultiTransactionSignature21
-							.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
 					oMultiTransactionSignature21.setSignature(ByteString.copyFrom(
 							encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 					oMultiTransactionBody.addSignatures(oMultiTransactionSignature21);

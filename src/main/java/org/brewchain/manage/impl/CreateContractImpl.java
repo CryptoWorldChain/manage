@@ -122,8 +122,6 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 					// 签名
 					MultiTransactionSignature.Builder oMultiTransactionSignature21 = MultiTransactionSignature
 							.newBuilder();
-					oMultiTransactionSignature21
-							.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
 					oMultiTransactionSignature21.setSignature(ByteString.copyFrom(
 							encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 					oMultiTransactionBody.addSignatures(oMultiTransactionSignature21);

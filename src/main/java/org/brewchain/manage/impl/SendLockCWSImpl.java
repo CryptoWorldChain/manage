@@ -110,7 +110,6 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionBody.setTimestamp(System.currentTimeMillis());
 				// 签名
 				MultiTransactionSignature.Builder oMultiTransactionSignature = MultiTransactionSignature.newBuilder();
-				oMultiTransactionSignature.setPubKey(ByteString.copyFrom(encApi.hexDec(oKeyStoreValue.getPubkey())));
 				oMultiTransactionSignature.setSignature(ByteString.copyFrom(
 						encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 				oMultiTransactionBody.addSignatures(oMultiTransactionSignature);

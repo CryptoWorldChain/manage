@@ -54,7 +54,7 @@ public class GetContractListImpl extends SessionModules<ReqGetContractList> {
 	public void onPBPacket(final FramePacket pack, final ReqGetContractList pb, final CompleteHandler handler) {
 		RespGetContractList.Builder oRespGetContractList = RespGetContractList.newBuilder();
 		try {
-			OValue oOValue = dao.getAccountDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
+			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespGetContractList.setRetCode("-1");

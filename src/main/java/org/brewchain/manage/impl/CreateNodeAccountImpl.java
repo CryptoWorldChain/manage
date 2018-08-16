@@ -88,7 +88,7 @@ public class CreateNodeAccountImpl extends SessionModules<ReqCreateNewAccount> {
 
 				oRespCreateNewAccount.setRetCode("1");
 
-				dao.getAccountDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
+				dao.getManageDao().put(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()),
 						OEntityBuilder.byteValue2OValue(encApi.hexDec(oKeyStoreValue.getAddress())));
 				KeyConstant.PWD = pb.getPwd();
 			}

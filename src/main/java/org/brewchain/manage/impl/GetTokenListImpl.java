@@ -59,7 +59,7 @@ public class GetTokenListImpl extends SessionModules<ReqQueryToken> {
 	public void onPBPacket(final FramePacket pack, final ReqQueryToken pb, final CompleteHandler handler) {
 		RespQueryToken.Builder oRespQueryToken = RespQueryToken.newBuilder();
 		try {
-			OValue oOValue = dao.getAccountDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
+			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespQueryToken.setRetCode("-1");

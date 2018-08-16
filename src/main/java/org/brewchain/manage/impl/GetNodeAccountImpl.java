@@ -54,7 +54,7 @@ public class GetNodeAccountImpl extends SessionModules<ReqGetNodeAccount> {
 		RespGetNodeAccount.Builder oRespGetNodeAccount = RespGetNodeAccount.newBuilder();
 
 		try {
-			OValue oOValue = dao.getAccountDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
+			OValue oOValue = dao.getManageDao().get(OEntityBuilder.byteKey2OKey(ManageKeys.NODE_ACCOUNT.getBytes()))
 					.get();
 			if (oOValue == null || oOValue.getExtdata() == null || oOValue.getExtdata().equals(ByteString.EMPTY)) {
 				oRespGetNodeAccount.setRetCode("-1");

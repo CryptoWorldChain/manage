@@ -22,8 +22,8 @@ import onight.tfw.ojpa.api.annotations.StoreDAO;
 public class ManageDaos extends SessionModules<Message> {
 	@StoreDAO(target = "bc_bdb", daoClass = ManageDomain.class)
 	ODBSupport manageDao;
-	@StoreDAO(target = "bc_bdb", daoClass = AccoutDomain.class)
-	ODBSupport accountDao;
+//	@StoreDAO(target = "bc_bdb", daoClass = AccoutDomain.class)
+//	ODBSupport accountDao;
 	@ActorRequire(scope = "global", name = "pzpctrl")
 	PZPCtrl pzp;
 
@@ -37,13 +37,13 @@ public class ManageDaos extends SessionModules<Message> {
 	@Override
 	public void onDaoServiceReady(DomainDaoSupport arg0) {
 	}
-	public void setAccountDao(DomainDaoSupport accountDao) {
-		this.accountDao = (ODBSupport) accountDao;
-	}
-
-	public ODBSupport getAccountDao() {
-		return accountDao;
-	}
+//	public void setAccountDao(DomainDaoSupport accountDao) {
+//		this.accountDao = (ODBSupport) accountDao;
+//	}
+//
+//	public ODBSupport getAccountDao() {
+//		return accountDao;
+//	}
 	public void setManageDao(DomainDaoSupport manageDao) {
 		this.manageDao = (ODBSupport) manageDao;
 	}

@@ -130,7 +130,7 @@ public class CreateContractImpl extends SessionModules<ReqCreateContract> {
 					oRespCreateContract.setContractHash(encApi.hexEnc(transactionHelper
 							.getContractAddressByTransaction(oMultiTransaction.build()).toByteArray()));
 
-					String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction);
+					String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction).getKey();
 					oRespCreateContract.setRetCode("1");
 				}
 			} catch (Throwable e) {

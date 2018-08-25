@@ -47,7 +47,7 @@ public class GetNodeTransactionInfoImpl extends SessionModules<ReqGetNodeTransac
 	@Override
 	public void onPBPacket(final FramePacket pack, final ReqGetNodeTransactionInfo pb, final CompleteHandler handler) {
 		RespGetNodeTransactionInfo.Builder oRespGetNodeTransactionInfo = RespGetNodeTransactionInfo.newBuilder();
-		oRespGetNodeTransactionInfo.setWaitBlock(transactionHelper.getOPendingHashMapDB().getStorage().size());
+		oRespGetNodeTransactionInfo.setWaitBlock(transactionHelper.getOConfirmMapDB().getStorage().size());
 		oRespGetNodeTransactionInfo.setWaitSend(transactionHelper.getOSendingHashMapDB().getStorage().size());
 		
 		handler.onFinished(PacketHelper.toPBReturn(pack, oRespGetNodeTransactionInfo.build()));

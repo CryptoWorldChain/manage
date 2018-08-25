@@ -115,7 +115,7 @@ public class SendLockCWSImpl extends SessionModules<ReqSendLockCWS> {
 				oMultiTransactionBody.addSignatures(oMultiTransactionSignature);
 				oMultiTransaction.setTxBody(oMultiTransactionBody);
 
-				String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction);
+				String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction).getKey();
 				oRespDoTxResult.setRetCode("1");
 				oRespDoTxResult.setTxHash(txHash);
 			}

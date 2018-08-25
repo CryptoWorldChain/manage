@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.brewchain.account.bean.HashPair;
 import org.brewchain.account.core.AccountHelper;
 import org.brewchain.account.core.BlockChainConfig;
 import org.brewchain.account.core.TransactionHelper;
@@ -148,7 +149,9 @@ public class CreateTokenImpl extends SessionModules<ReqCreateToken> {
 							encApi.ecSign(oKeyStoreValue.getPrikey(), oMultiTransactionBody.build().toByteArray())));
 					oMultiTransactionBody.addSignatures(oMultiTransactionSignature21);
 					oMultiTransaction.setTxBody(oMultiTransactionBody);
-					String txHash = transactionHelper.CreateMultiTransaction(oMultiTransaction);
+					
+					HashPair oHashPair = transactionHelper.CreateMultiTransaction(oMultiTransaction);
+					String txHash = oHashPair.getKey();
 					oRespCreateToken.setTxHash(txHash);
 					oRespCreateToken.setRetCode("1");
 				}
